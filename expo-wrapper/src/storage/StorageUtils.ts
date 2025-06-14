@@ -1,4 +1,3 @@
-import { MMKV } from 'react-native-mmkv';
 import {
   AllModel,
   Chat,
@@ -8,8 +7,7 @@ import {
   SystemPrompt,
   Usage,
   TokenResponse,
-} from '../types/Chat.ts';
-import uuid from 'uuid';
+} from '../types/Chat';
 import {
   DefaultRegion,
   DefaultVoiceSystemPrompts,
@@ -17,23 +15,58 @@ import {
   getDefaultSystemPrompts,
   getDefaultTextModels,
   VoiceIDList,
-} from './Constants.ts';
+} from './Constants';
 
-export const storage = new MMKV();
+// Simple UUID generator function
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Simple in-memory storage that mimics MMKV interface
+const memoryStorage = new Map<string, string>();
+
+class MemoryStorageWrapper {
+  getString(key: string): string | null {
+    return memoryStorage.get(key) ?? null;
+  }
+
+  getNumber(key: string): number | null {
+    const value = memoryStorage.get(key);
+    return value ? Number(value) : null;
+  }
+
+  getBoolean(key: string): boolean | null {
+    const value = memoryStorage.get(key);
+    return value ? JSON.parse(value) : null;
+  }
+
+  set(key: string, value: string | number | boolean): void {
+    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+    memoryStorage.set(key, stringValue);
+  }
+
+  delete(key: string): void {
+    memoryStorage.delete(key);
+  }
+}
+
+export const storage = new MemoryStorageWrapper();
 
 const initializeStorage = () => {
   const key = 'encryption_key';
   let encryptionKey = storage.getString(key);
   if (!encryptionKey) {
-    encryptionKey = uuid.v4();
+    encryptionKey = generateUUID();
     storage.set(key, encryptionKey);
   }
 
-  return new MMKV({
-    id: 'swiftchat',
-    encryptionKey: encryptionKey,
-  });
+  return new MemoryStorageWrapper();
 };
+
 export const encryptStorage = initializeStorage();
 
 const keyPrefix = 'bedrock/';
@@ -84,7 +117,7 @@ export function saveMessages(
   sessionId: number,
   messages: SwiftChatMessage[],
   usage: Usage
-) {
+): void {
   messages[0].usage = usage;
   messages.forEach((message, index) => {
     if (index !== 0 && 'usage' in message) {
@@ -98,7 +131,7 @@ export function saveMessageList(
   sessionId: number,
   fistMessage: SwiftChatMessage,
   chatMode: ChatMode
-) {
+): void {
   let allMessageStr = getMessageListStr();
   const currentMessageStr = JSON.stringify({
     id: sessionId,
@@ -119,7 +152,7 @@ export function getMessageList(): Chat[] {
   return JSON.parse('[' + getMessageListStr()) as Chat[];
 }
 
-export function updateMessageList(chatList: Chat[]) {
+export function updateMessageList(chatList: Chat[]): void {
   if (chatList.length > 0) {
     storage.set(messageListKey, JSON.stringify(chatList).substring(1));
   } else {
@@ -127,7 +160,7 @@ export function updateMessageList(chatList: Chat[]) {
   }
 }
 
-function getMessageListStr() {
+function getMessageListStr(): string {
   return storage.getString(messageListKey) ?? ']';
 }
 
@@ -139,15 +172,15 @@ export function getMessagesBySessionId(sessionId: number): SwiftChatMessage[] {
   return [];
 }
 
-export function deleteMessagesBySessionId(sessionId: number) {
+export function deleteMessagesBySessionId(sessionId: number): void {
   storage.delete(sessionIdPrefix + sessionId);
 }
 
-export function getSessionId() {
+export function getSessionId(): number {
   return storage.getNumber(currentSessionIdKey) ?? 0;
 }
 
-export function saveKeys(apiUrl: string, apiKey: string) {
+export function saveKeys(apiUrl: string, apiKey: string): void {
   if (apiUrl.endsWith('/')) {
     apiUrl = apiUrl.slice(0, -1);
   }
@@ -225,57 +258,57 @@ export function getOpenAICompatModels(): string {
   return storage.getString(openAICompatModelsKey) ?? '';
 }
 
-export function saveOpenAICompatApiKey(apiKey: string) {
+export function saveOpenAICompatApiKey(apiKey: string): void {
   currentOpenAICompatApiKey = apiKey;
   encryptStorage.set(openAICompatApiKeyTag, apiKey);
 }
 
-export function saveOpenAICompatApiURL(apiUrl: string) {
+export function saveOpenAICompatApiURL(apiUrl: string): void {
   currentOpenAICompatApiURL = apiUrl;
   storage.set(openAICompatApiURLKey, apiUrl);
 }
 
-export function saveOpenAICompatModels(models: string) {
+export function saveOpenAICompatModels(models: string): void {
   storage.set(openAICompatModelsKey, models);
 }
 
-export function saveHapticEnabled(enabled: boolean) {
+export function saveHapticEnabled(enabled: boolean): void {
   storage.set(hapticEnabledKey, enabled);
 }
 
-export function getHapticEnabled() {
+export function getHapticEnabled(): boolean {
   return storage.getBoolean(hapticEnabledKey) ?? true;
 }
 
-export function saveApiUrl(apiUrl: string) {
+export function saveApiUrl(apiUrl: string): void {
   storage.set(apiUrlKey, apiUrl);
 }
 
-export function saveApiKey(apiKey: string) {
+export function saveApiKey(apiKey: string): void {
   encryptStorage.set(apiKeyTag, apiKey);
 }
 
-export function saveOllamaApiURL(apiUrl: string) {
+export function saveOllamaApiURL(apiUrl: string): void {
   currentOllamaApiUrl = apiUrl;
   storage.set(ollamaApiUrlKey, apiUrl);
 }
 
-export function saveDeepSeekApiKey(apiKey: string) {
+export function saveDeepSeekApiKey(apiKey: string): void {
   currentDeepSeekApiKey = apiKey;
   encryptStorage.set(deepSeekApiKeyTag, apiKey);
 }
 
-export function saveOpenAIApiKey(apiKey: string) {
+export function saveOpenAIApiKey(apiKey: string): void {
   currentOpenAIApiKey = apiKey;
   encryptStorage.set(openAIApiKeyTag, apiKey);
 }
 
-export function saveRegion(region: string) {
+export function saveRegion(region: string): void {
   currentRegion = region;
   storage.set(regionKey, region);
 }
 
-export function getRegion() {
+export function getRegion(): string {
   if (currentRegion) {
     return currentRegion;
   } else {
@@ -284,7 +317,7 @@ export function getRegion() {
   }
 }
 
-export function saveTextModel(model: Model) {
+export function saveTextModel(model: Model): void {
   currentTextModel = model;
   storage.set(textModelKey, JSON.stringify(model));
 }
@@ -303,7 +336,7 @@ export function getTextModel(): Model {
   }
 }
 
-export function saveImageModel(model: Model) {
+export function saveImageModel(model: Model): void {
   currentImageModel = model;
   storage.set(imageModelKey, JSON.stringify(model));
 }
@@ -322,11 +355,11 @@ export function getImageModel(): Model {
   }
 }
 
-export function saveAllModels(allModels: AllModel) {
+export function saveAllModels(allModels: AllModel): void {
   storage.set(allModelKey, JSON.stringify(allModels));
 }
 
-export function getAllModels() {
+export function getAllModels(): AllModel {
   const modelString = storage.getString(allModelKey) ?? '';
   if (modelString.length > 0) {
     return JSON.parse(modelString) as AllModel;
@@ -337,17 +370,17 @@ export function getAllModels() {
   };
 }
 
-export function getAllImageSize(imageModelId: string = '') {
+export function getAllImageSize(imageModelId: string = ''): string[] {
   if (isNewStabilityImageModel(imageModelId)) {
     return ['1024 x 1024'];
   }
   if (isNovaCanvas(imageModelId)) {
-    return ['1024 x 1024', '2048 x 2048'];
+    return ['1024 x 1024'];
   }
   return ['512 x 512', '1024 x 1024'];
 }
 
-export function isNewStabilityImageModel(modelId: string) {
+export function isNewStabilityImageModel(modelId: string): boolean {
   return (
     modelId === 'stability.sd3-large-v1:0' ||
     modelId === 'stability.stable-image-ultra-v1:0' ||
@@ -355,23 +388,24 @@ export function isNewStabilityImageModel(modelId: string) {
   );
 }
 
-export function isNovaCanvas(modelId: string) {
+export function isNovaCanvas(modelId: string): boolean {
   return modelId.includes('nova-canvas');
 }
 
-export function saveImageSize(size: string) {
+export function saveImageSize(size: string): void {
   storage.set(imageSizeKey, size);
 }
 
-export function getImageSize() {
-  return storage.getString(imageSizeKey) ?? getAllImageSize()[1];
+export function getImageSize(): string {
+  const allSizes = getAllImageSize();
+  return storage.getString(imageSizeKey) ?? allSizes[1];
 }
 
-export function saveVoiceId(voiceId: string) {
+export function saveVoiceId(voiceId: string): void {
   storage.set(voiceIdKey, voiceId);
 }
 
-export function getVoiceId() {
+export function getVoiceId(): string {
   return storage.getString(voiceIdKey) ?? VoiceIDList[0].voiceId;
 }
 
@@ -380,7 +414,7 @@ export function getModelUsage(): Usage[] {
   return usage ? JSON.parse(usage) : [];
 }
 
-export function updateTotalUsage(usage: Usage) {
+export function updateTotalUsage(usage: Usage): void {
   const currentUsage = getModelUsage();
   const modelIndex = currentUsage.findIndex(
     m => m.modelName === usage.modelName
@@ -402,7 +436,7 @@ export function updateTotalUsage(usage: Usage) {
   storage.set(modelUsageKey, JSON.stringify(currentUsage));
 }
 
-export function saveCurrentSystemPrompt(prompts: SystemPrompt | null) {
+export function saveCurrentSystemPrompt(prompts: SystemPrompt | null): void {
   storage.set(currentSystemPromptKey, prompts ? JSON.stringify(prompts) : '');
 }
 
@@ -414,7 +448,7 @@ export function getCurrentSystemPrompt(): SystemPrompt | null {
   return null;
 }
 
-export function saveCurrentVoiceSystemPrompt(prompts: SystemPrompt | null) {
+export function saveCurrentVoiceSystemPrompt(prompts: SystemPrompt | null): void {
   storage.set(
     currentVoiceSystemPromptKey,
     prompts ? JSON.stringify(prompts) : ''
@@ -429,7 +463,7 @@ export function getCurrentVoiceSystemPrompt(): SystemPrompt | null {
   return null;
 }
 
-export function saveSystemPrompts(prompts: SystemPrompt[], type?: string) {
+export function saveSystemPrompts(prompts: SystemPrompt[], type?: string): void {
   // get all prompt
   currentSystemPrompts = prompts;
   const promptsString = storage.getString(systemPromptsKey) ?? '';
@@ -445,7 +479,7 @@ export function saveSystemPrompts(prompts: SystemPrompt[], type?: string) {
   storage.set(systemPromptsKey, JSON.stringify(updatedPrompts));
 }
 
-export function saveAllSystemPrompts(prompts: SystemPrompt[]) {
+export function saveAllSystemPrompts(prompts: SystemPrompt[]): void {
   storage.set(systemPromptsKey, JSON.stringify(prompts));
 }
 
@@ -473,20 +507,20 @@ export function getSystemPrompts(type?: string): SystemPrompt[] {
   return currentSystemPrompts;
 }
 
-export function getPromptId() {
+export function getPromptId(): number {
   return storage.getNumber(currentPromptIdKey) ?? 0;
 }
 
-export function savePromptId(promptId: number) {
+export function savePromptId(promptId: number): void {
   storage.set(currentPromptIdKey, promptId);
 }
 
-export function saveOpenAIProxyEnabled(enabled: boolean) {
+export function saveOpenAIProxyEnabled(enabled: boolean): void {
   currentOpenAIProxyEnabled = enabled;
   storage.set(openAIProxyEnabledKey, enabled);
 }
 
-export function getOpenAIProxyEnabled() {
+export function getOpenAIProxyEnabled(): boolean {
   if (currentOpenAIProxyEnabled !== undefined) {
     return currentOpenAIProxyEnabled;
   } else {
@@ -496,12 +530,12 @@ export function getOpenAIProxyEnabled() {
   }
 }
 
-export function saveThinkingEnabled(enabled: boolean) {
+export function saveThinkingEnabled(enabled: boolean): void {
   currentThinkingEnabled = enabled;
   storage.set(thinkingEnabledKey, enabled);
 }
 
-export function getThinkingEnabled() {
+export function getThinkingEnabled(): boolean {
   if (currentThinkingEnabled !== undefined) {
     return currentThinkingEnabled;
   } else {
@@ -511,7 +545,7 @@ export function getThinkingEnabled() {
 }
 
 // Model order functions
-export function saveModelOrder(models: Model[]) {
+export function saveModelOrder(models: Model[]): void {
   currentModelOrder = models;
   storage.set(modelOrderKey, JSON.stringify(models));
 }
@@ -531,7 +565,7 @@ export function getModelOrder(): Model[] {
 }
 
 // Update model order when a model is used
-export function updateTextModelUsageOrder(model: Model) {
+export function updateTextModelUsageOrder(model: Model): Model[] {
   const currentOrder = getModelOrder();
   const updatedOrder = [
     model,
@@ -544,7 +578,7 @@ export function updateTextModelUsageOrder(model: Model) {
 // Get merged model order - combines history with current available models
 export function getMergedModelOrder(): Model[] {
   const historyModels = getModelOrder();
-  const currentTextModels = getAllModels().textModel;
+  const currentTextModels = (getAllModels()).textModel;
   const currentModelMap = new Map<string, Model>();
   currentTextModels.forEach(model => {
     currentModelMap.set(model.modelId, model);
@@ -564,7 +598,7 @@ export function getMergedModelOrder(): Model[] {
 }
 
 // token related methods
-export function saveTokenInfo(tokenInfo: TokenResponse) {
+export function saveTokenInfo(tokenInfo: TokenResponse): void {
   encryptStorage.set(tokenInfoKey, JSON.stringify(tokenInfo));
 }
 

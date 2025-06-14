@@ -20,12 +20,11 @@ import {
   invokeBedrockWithCallBack as invokeBedrockWithCallBack,
   requestToken,
 } from '../api/bedrock-api';
-import CustomMessageComponent from './component/CustomMessageComponent.tsx';
-import { CustomScrollToBottomComponent } from './component/CustomScrollToBottomComponent.tsx';
-import { EmptyChatComponent } from './component/EmptyChatComponent.tsx';
+import CustomMessageComponent from './component/CustomMessageComponent';
+import { CustomScrollToBottomComponent } from './component/CustomScrollToBottomComponent';
+import { EmptyChatComponent } from './component/EmptyChatComponent';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import uuid from 'uuid';
-import { RouteParamList } from '../types/RouteTypes.ts';
+import { RouteParamList } from '../types/RouteTypes';
 import {
   getCurrentSystemPrompt,
   getCurrentVoiceSystemPrompt,
@@ -39,7 +38,7 @@ import {
   saveMessageList,
   saveMessages,
   updateTotalUsage,
-} from '../storage/StorageUtils.ts';
+} from '../storage/StorageUtils';
 import {
   ChatMode,
   ChatStatus,
@@ -48,33 +47,42 @@ import {
   SwiftChatMessage,
   SystemPrompt,
   Usage,
-} from '../types/Chat.ts';
-import { useAppContext } from '../history/AppProvider.tsx';
-import { CustomHeaderRightButton } from './component/CustomHeaderRightButton.tsx';
-import CustomSendComponent from './component/CustomSendComponent.tsx';
+} from '../types/Chat';
+import { useAppContext } from '../history/AppProvider';
+import { CustomHeaderRightButton } from './component/CustomHeaderRightButton';
+import CustomSendComponent from './component/CustomSendComponent';
 import {
   BedrockMessage,
   getBedrockMessage,
   getBedrockMessagesFromChatMessages,
-} from './util/BedrockMessageConvertor.ts';
-import { trigger } from './util/HapticUtils.ts';
-import { HapticFeedbackTypes } from 'react-native-haptic-feedback/src/types.ts';
-import { isMac } from '../App.tsx';
-import { CustomChatFooter } from './component/CustomChatFooter.tsx';
+} from './util/BedrockMessageConvertor';
+import { trigger } from './util/HapticUtils';
+import { HapticFeedbackTypes } from 'react-native-haptic-feedback/src/types';
+import { isMac } from '../App';
+import { CustomChatFooter } from './component/CustomChatFooter';
 import {
   checkFileNumberLimit,
   getFileTypeSummary,
   isAllFileReady,
-} from './util/FileUtils.ts';
-import HeaderTitle from './component/HeaderTitle.tsx';
-import { showInfo } from './util/ToastUtils.ts';
+} from './util/FileUtils';
+import HeaderTitle from './component/HeaderTitle';
+import { showInfo } from './util/ToastUtils';
 import { HeaderOptions } from '@react-navigation/elements';
 
 const BOT_ID = 2;
 
+// Simple UUID generator function
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 const createBotMessage = (mode: string) => {
   return {
-    _id: uuid.v4(),
+    _id: generateUUID(),
     text: mode === ChatMode.Text ? textPlaceholder : imagePlaceholder,
     createdAt: new Date(),
     user: {
@@ -664,7 +672,7 @@ function ChatScreen(): React.JSX.Element {
       });
     } else {
       const newMessage: SwiftChatMessage = {
-        _id: uuid.v4(),
+        _id: generateUUID(),
         text: text,
         createdAt: new Date(),
         user: {
@@ -697,7 +705,8 @@ function ChatScreen(): React.JSX.Element {
           _id: 1,
         }}
         alignTop={false}
-        inverted={true}
+        inverted={false}
+        isAnimated={false}
         renderChatEmpty={() => (
           <EmptyChatComponent
             chatMode={modeRef.current}
@@ -877,7 +886,7 @@ function ChatScreen(): React.JSX.Element {
               text: inputTexRef.current,
               user: { _id: 1 },
               createdAt: new Date(),
-              _id: uuid.v4(),
+              _id: generateUUID(),
             };
             onSend([msg]);
           }

@@ -5,16 +5,16 @@ import {
   createDrawerNavigator,
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import CustomDrawerContent from './history/CustomDrawerContent.tsx';
+import CustomDrawerContent from './history/CustomDrawerContent';
 import { Dimensions, Keyboard, StatusBar } from 'react-native';
-import ChatScreen from './chat/ChatScreen.tsx';
-import { RouteParamList } from './types/RouteTypes.ts';
-import { AppProvider, useAppContext } from './history/AppProvider.tsx';
-import SettingsScreen from './settings/SettingsScreen.tsx';
+import ChatScreen from './chat/ChatScreen';
+import { RouteParamList } from './types/RouteTypes';
+import { AppProvider, useAppContext } from './history/AppProvider';
+import SettingsScreen from './settings/SettingsScreen';
 import Toast from 'react-native-toast-message';
-import TokenUsageScreen from './settings/TokenUsageScreen.tsx';
+import TokenUsageScreen from './settings/TokenUsageScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import PromptScreen from './prompt/PromptScreen.tsx';
+import PromptScreen from './prompt/PromptScreen';
 import { isMacCatalyst } from './utils/PlatformUtils';
 
 export const isMac = isMacCatalyst;

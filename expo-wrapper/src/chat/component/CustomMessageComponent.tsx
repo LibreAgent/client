@@ -19,30 +19,30 @@ import {
 } from 'react-native';
 import * as Sharing from 'expo-sharing';
 import { MessageProps } from 'react-native-gifted-chat';
-import { CustomMarkdownRenderer } from './markdown/CustomMarkdownRenderer.tsx';
-import { MarkedStyles } from 'react-native-marked/src/theme/types.ts';
+import { CustomMarkdownRenderer } from './markdown/CustomMarkdownRenderer';
+import { MarkedStyles } from 'react-native-marked/src/theme/types';
 import {
   ChatStatus,
   ModelTag,
   PressMode,
   SwiftChatMessage,
-} from '../../types/Chat.ts';
-import { trigger } from '../util/HapticUtils.ts';
-import { HapticFeedbackTypes } from 'react-native-haptic-feedback/src/types.ts';
+} from '../../types/Chat';
+import { trigger } from '../util/HapticUtils';
+import { HapticFeedbackTypes } from 'react-native-haptic-feedback/src/types';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {
   CustomFileListComponent,
   DisplayMode,
-} from './CustomFileListComponent.tsx';
+} from './CustomFileListComponent';
 import FileViewer from 'react-native-file-viewer';
-import { isMac } from '../../App.tsx';
-import { CustomTokenizer } from './markdown/CustomTokenizer.ts';
-import Markdown from './markdown/Markdown.tsx';
-import ImageSpinner from './ImageSpinner.tsx';
+import { isMac } from '../../App';
+import { CustomTokenizer } from './markdown/CustomTokenizer';
+import Markdown from './markdown/Markdown';
+import ImageSpinner from './ImageSpinner';
 import { State, TapGestureHandler } from 'react-native-gesture-handler';
-import { getModelTagByUserName } from '../../utils/ModelUtils.ts';
-import { isAndroid } from '../../utils/PlatformUtils.ts';
-import { useAppContext } from '../../history/AppProvider.tsx';
+import { getModelTagByUserName } from '../../utils/ModelUtils';
+import { isAndroid } from '../../utils/PlatformUtils';
+import { useAppContext } from '../../history/AppProvider';
 
 interface CustomMessageProps extends MessageProps<SwiftChatMessage> {
   chatStatus: ChatStatus;
@@ -436,6 +436,7 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: 12,
     marginVertical: 4,
+    transform: [{ scaleY: 1 }],
   },
   marked_box: {
     marginLeft: 28,
@@ -480,6 +481,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     color: '#333',
+    transform: [{ scaleY: 1 }],
+    writingDirection: 'ltr',
   },
   inputText: {
     fontSize: 16,
@@ -490,6 +493,8 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#333',
     letterSpacing: 0,
+    transform: [{ scaleY: 1 }],
+    writingDirection: 'ltr',
   },
   reasoningContainer: {
     marginBottom: 8,
