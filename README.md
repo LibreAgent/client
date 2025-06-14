@@ -2,7 +2,7 @@
 
 > 🚀 Your Personal AI Assistant - Fast, Private, and Cross-platform
 
-[![GitHub Release](https://img.shields.io/github/v/release/aws-samples/swift-chat)](https://github.com/aws-samples/swift-chat/releases)
+[![GitHub Release](https://img.shields.io/github/v-release/aws-samples/swift-chat)](https://github.com/aws-samples/swift-chat/releases)
 [![License](https://img.shields.io/badge/license-MIT--0-green)](LICENSE)
 
 ## 📱 Quick Download
@@ -222,6 +222,116 @@ Congratulations 🎉 Your SwiftChat App is ready to use!
 - Europe (Paris): eu-west-3
 - South America (São Paulo): sa-east-1
 
+## 🧠 Language Models & AI Configuration
+
+### Default LLM: Amazon Nova Pro
+
+SwiftChat uses **Amazon Nova Pro** as the default language model, which provides an excellent balance of capabilities for mobile chat applications:
+
+#### About Amazon Nova Pro
+- **Type**: Highly capable multimodal model (text, images, video)
+- **Strengths**: Best combination of accuracy, speed, and cost
+- **Use Cases**: Wide range of conversational AI tasks
+- **Capabilities**: 
+  - Text understanding and generation
+  - Image analysis and description
+  - Video content processing
+  - Agentic capabilities and UI actuation
+- **Performance**: Optimized for real-time streaming conversations
+- **Cost**: Competitive pricing in the Nova model family
+
+Amazon Nova Pro is part of AWS's new generation of foundation models that deliver frontier intelligence with industry-leading price performance. It excels in conversational AI scenarios and provides robust multimodal capabilities perfect for mobile chat applications.
+
+**Learn More**: [Amazon Nova Documentation](https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html)
+
+### 📱 Mobile-Optimized Alternatives
+
+For developers seeking **ultra-lightweight, on-device AI** that runs directly on mobile hardware without cloud dependencies, consider these mobile-first alternatives:
+
+#### Google Gemma 3 1B - Recommended Mobile Option
+- **Size**: Only 529MB (int4 quantized)
+- **Performance**: Up to 2,585 tokens/sec on mobile devices
+- **Memory**: ~2GB dynamic memory footprint
+- **Capabilities**:
+  - Fast text generation and understanding
+  - On-device processing (privacy-first)
+  - Customizable and fine-tunable
+  - Optimized for Android and web deployment
+- **Benefits**:
+  - ✅ No internet required after download
+  - ✅ Complete privacy (data never leaves device)
+  - ✅ Ultra-low latency responses
+  - ✅ Reduced API costs
+  - ✅ Works offline
+
+#### Google Gemma 3n (Preview) - Next-Generation Mobile AI
+- **Architecture**: Mobile-first design with Per-Layer Embeddings (PLE)
+- **Models**: 5B and 8B parameters with 2GB/3GB memory footprint
+- **Innovation**: Advanced architecture shared with Gemini Nano
+- **Collaboration**: Optimized with Qualcomm, MediaTek, and Samsung
+- **Target**: Real-time multimodal AI on phones, tablets, laptops
+
+### 🔄 Model Comparison Matrix
+
+| Model | Type | Size | Latency | Privacy | Cost | Best For |
+|-------|------|------|---------|---------|------|----------|
+| **Amazon Nova Pro** | Cloud | N/A | Low | Cloud-based | Pay-per-use | Full-featured chat, multimodal |
+| **Gemma 3 1B** | On-device | 529MB | Ultra-low | Complete | One-time | Mobile apps, offline use |
+| **Gemma 3n** | On-device | 2-3GB | Ultra-low | Complete | One-time | Advanced mobile AI |
+| **Nova Micro** | Cloud | N/A | Lowest | Cloud-based | Very low cost | Simple text tasks |
+| **Nova Lite** | Cloud | N/A | Very low | Cloud-based | Low cost | Multimodal, fast processing |
+
+### 🛠 How to Switch Models
+
+#### Changing Cloud Models (Nova Family)
+1. Open SwiftChat **Settings**
+2. Navigate to **Model Configuration**
+3. Select your preferred region (e.g., `us-west-2` for Nova Pro)
+4. Choose from available models:
+   - `Amazon Nova Micro` (text-only, lowest cost)
+   - `Amazon Nova Lite` (multimodal, very low cost)
+   - `Amazon Nova Pro` (recommended, balanced performance)
+   - `Amazon Nova Premier` (most capable, complex tasks)
+
+#### Implementing On-Device Models (Advanced)
+For developers interested in implementing Gemma 3 or other on-device models:
+
+```bash
+# Example: Adding Gemma 3 1B support
+npm install @google-ai/generativelanguage
+# or
+npm install @huggingface/transformers
+```
+
+**Note**: On-device model integration requires additional development work and is not currently built into SwiftChat's default configuration. This would be a custom implementation for advanced users.
+
+### 💡 Model Selection Recommendations
+
+#### Choose **Amazon Nova Pro** (Default) if:
+- ✅ You want the best out-of-the-box experience
+- ✅ You need multimodal capabilities (text + images + video)
+- ✅ You prefer cloud-based processing
+- ✅ You want regular model updates and improvements
+- ✅ You're building a production app with reliable performance
+
+#### Choose **Mobile Models (Gemma)** if:
+- ✅ Privacy is your top priority
+- ✅ You need offline functionality
+- ✅ You want to minimize API costs
+- ✅ You're building for resource-constrained environments
+- ✅ You need ultra-low latency responses
+- ✅ You're comfortable with custom implementation
+
+### 🔮 Future Roadmap
+
+We're actively exploring integration of mobile-optimized models like Gemma 3 into SwiftChat to provide:
+- **Hybrid Mode**: Automatic switching between cloud and on-device models
+- **Privacy Mode**: Complete on-device processing option
+- **Offline Mode**: Full functionality without internet connection
+- **Custom Model Support**: Easy integration of third-party models
+
+**Stay tuned** for updates on mobile-first AI integration in future SwiftChat releases!
+
 ## Getting Started with Other Model Providers
 
 ### Ollama
@@ -366,37 +476,333 @@ landscape orientation.
 - No data collection
 - Privacy-first approach
 
+## 🎉 Expo Migration Success
+
+**Great News!** SwiftChat has been successfully migrated to Expo managed workflow!
+
+✅ **Migration Completed**: The app now runs seamlessly on Expo with all core features working
+✅ **Text Rendering Fixed**: Resolved upside-down text issues in chat messages
+✅ **Native Module Compatibility**: All incompatible modules replaced with Expo-compatible alternatives
+✅ **Cross-Platform Ready**: Enhanced support for iOS, Android, and Web platforms
+✅ **Simplified Development**: Easier setup, faster iteration, and streamlined deployment
+
+The Expo version is now the **recommended approach** for development and deployment.
+
 ## App Build and Development
 
-First, clone this repository. All app code is located in the `react-native` folder. Before proceeding, execute the
-following command to download dependencies.
+SwiftChat now supports **two development approaches**:
+
+1. **🚀 Expo Managed Workflow** (Recommended) - Located in `expo-wrapper/` folder
+2. **⚙️ Bare React Native** (Legacy) - Located in `react-native/` folder
+
+### 🚀 Expo Managed Workflow (Recommended)
+
+The Expo version provides easier setup, better cross-platform compatibility, and simplified deployment.
+
+#### Prerequisites
 
 ```bash
-cd react-native && npm i && npm start
+# Install Node.js (v18 or later)
+# Install Expo CLI globally
+npm install -g @expo/cli
+
+# Clone the repository
+git clone <repository-url>
+cd client/expo-wrapper
 ```
 
-### Build for Android
-
-open a new terminal and execute:
+#### Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Start the development server
+npx expo start
+```
+
+#### Platform-Specific Development
+
+##### 📱 **iOS Development**
+
+**Option 1: Physical Device (Recommended)**
+```bash
+# Start Expo development server
+npx expo start
+
+# Scan QR code with:
+# - Camera app (iOS 11+)
+# - Expo Go app from App Store
+```
+
+**Option 2: iOS Simulator**
+```bash
+# Start development server
+npx expo start
+
+# Press 'i' to open iOS Simulator
+# (Requires Xcode installed on macOS)
+```
+
+**Option 3: Development Build**
+```bash
+# Create development build
+npx expo install expo-dev-client
+npx expo run:ios
+
+# This creates a custom development build with native modules
+```
+
+##### 🤖 **Android Development**
+
+**Option 1: Physical Device**
+```bash
+# Enable Developer Options and USB Debugging on your device
+# Start development server
+npx expo start
+
+# Scan QR code with Expo Go app from Google Play Store
+# OR press 'a' to install via ADB
+```
+
+**Option 2: Android Emulator**
+```bash
+# Start Android emulator (Android Studio required)
+# Start development server
+npx expo start
+
+# Press 'a' to open in Android emulator
+```
+
+**Option 3: Development Build**
+```bash
+# Create development build for Android
+npx expo run:android
+```
+
+##### 🌐 **Web Development**
+
+```bash
+# Start web development server
+npx expo start --web
+
+# OR
+npm run web
+
+# Opens in browser at http://localhost:19006
+```
+
+##### 💻 **macOS Development**
+
+Currently, macOS support is available through the legacy React Native build process. Expo web version works in Safari on macOS.
+
+#### Building for Production
+
+##### 📦 **Using Expo Build Service (EAS)**
+
+```bash
+# Install EAS CLI
+npm install -g eas-cli
+
+# Login to Expo account
+eas login
+
+# Configure build
+eas build:configure
+
+# Build for iOS
+eas build --platform ios
+
+# Build for Android
+eas build --platform android
+
+# Build for both platforms
+eas build --platform all
+```
+
+##### 🏪 **App Store Deployment**
+
+```bash
+# Submit to App Store (iOS)
+eas submit --platform ios
+
+# Submit to Google Play Store (Android)
+eas submit --platform android
+```
+
+##### 📱 **Local Builds**
+
+```bash
+# Build locally for iOS (requires macOS + Xcode)
+npx expo run:ios --configuration Release
+
+# Build locally for Android
+npx expo run:android --variant release
+```
+
+#### Environment Configuration
+
+Create `.env` file in `expo-wrapper/` directory:
+
+```bash
+# API Configuration
+EXPO_PUBLIC_API_URL=your-api-url
+EXPO_PUBLIC_API_KEY=your-api-key
+
+# Optional: Custom app configuration
+EXPO_PUBLIC_APP_NAME=SwiftChat
+```
+
+#### Expo-Specific Features
+
+- **Over-the-Air Updates**: Push updates without app store approval
+- **Expo Go**: Test on device without building
+- **EAS Build**: Cloud-based building service
+- **EAS Submit**: Automated app store submission
+- **Expo Dev Tools**: Enhanced debugging and development tools
+
+### ⚙️ Bare React Native (Legacy)
+
+For advanced users who need full native module control. Located in `react-native/` folder.
+
+#### Prerequisites
+
+```bash
+# Install dependencies
+cd react-native && npm install && npm start
+```
+
+#### Build for Android
+
+```bash
+# Open new terminal
 npm run android
 ```
 
-### Build for iOS
-
-also open a new terminal, for the first time you need to install the native dependencies
-by execute `cd ios && pod install && cd ..`, then execute the follow command:
+#### Build for iOS
 
 ```bash
+# Install iOS dependencies (first time only)
+cd ios && pod install && cd ..
+
+# Run iOS build
 npm run ios
 ```
 
-### Build for macOS
+#### Build for macOS
 
-1. Execute `npm start`.
-2. Double click `ios/SwiftChat.xcworkspace` to open the project in your Xcode.
-3. Change the build destination to `My Mac (Mac Catalyst)` then click the ▶ Run button.
+1. Execute `npm start`
+2. Open `ios/SwiftChat.xcworkspace` in Xcode
+3. Change build destination to `My Mac (Mac Catalyst)`
+4. Click ▶ Run button
+
+### 🔄 Migration from Bare React Native to Expo
+
+If you're currently using the bare React Native version, you can migrate to Expo:
+
+1. **Backup your current setup**
+2. **Switch to expo-wrapper directory**: `cd expo-wrapper`
+3. **Install dependencies**: `npm install`
+4. **Start development**: `npx expo start`
+5. **Test all features** to ensure compatibility
+6. **Update your deployment process** to use EAS Build
+
+### 📋 Development Tips
+
+#### Hot Reloading
+- **Expo**: Automatic with Fast Refresh
+- **Bare RN**: Manual reload may be required
+
+#### Debugging
+```bash
+# Expo debugging
+npx expo start --dev-client
+
+# Open debugger
+# Press 'j' in terminal or shake device
+```
+
+#### Clearing Cache
+```bash
+# Clear Expo cache
+npx expo start --clear
+
+# Clear npm cache
+npm start -- --reset-cache
+```
+
+#### Platform-Specific Code
+```javascript
+import { Platform } from 'react-native';
+
+if (Platform.OS === 'ios') {
+  // iOS-specific code
+} else if (Platform.OS === 'android') {
+  // Android-specific code
+} else if (Platform.OS === 'web') {
+  // Web-specific code
+}
+```
+
+### 🚀 Performance Optimization
+
+#### Expo Optimizations
+- Use `expo-updates` for OTA updates
+- Enable Hermes engine for better performance
+- Use `expo-image` for optimized image handling
+- Implement code splitting for web builds
+
+#### Bundle Analysis
+```bash
+# Analyze bundle size
+npx expo export --dump-sourcemap
+npx expo export --dump-assetmap
+```
+
+### 🔧 Troubleshooting
+
+#### Common Issues
+
+**Metro bundler errors:**
+```bash
+npx expo start --clear
+```
+
+**iOS build issues:**
+```bash
+cd ios && pod install && cd ..
+npx expo run:ios
+```
+
+**Android build issues:**
+```bash
+npx expo run:android --clear
+```
+
+**Expo Go connection issues:**
+- Ensure device and computer are on same network
+- Check firewall settings
+- Try using tunnel mode: `npx expo start --tunnel`
+
+#### Getting Help
+
+- **Expo Documentation**: https://docs.expo.dev/
+- **Expo Discord**: https://chat.expo.dev/
+- **GitHub Issues**: Create an issue in this repository
+
+### 📱 Platform Support Matrix
+
+| Platform | Expo Managed | Bare React Native | Status |
+|----------|--------------|-------------------|---------|
+| iOS | ✅ | ✅ | Fully Supported |
+| Android | ✅ | ✅ | Fully Supported |
+| Web | ✅ | ❌ | Expo Only |
+| macOS | 🔄 | ✅ | Legacy RN Only |
+
+**Legend:**
+- ✅ Fully Supported
+- 🔄 Partial Support
+- ❌ Not Supported
 
 ## API Reference
 
