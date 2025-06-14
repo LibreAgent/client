@@ -1,0 +1,54 @@
+Agent Prompt – Build LibreAgents Cross‑Platform App in IDE
+Agent Task summary:  We have forked the SwiftChat project from https://github.com/aws-samples/swift-chat (our fork lives at https://github.com/LibreAgent/client).  You will migrate it to an Expo.dev managed workspace named LibreAgents, build the project, fix build issues, and publish development builds for Android, iOS, macOS, and Web on Expo.dev under user topaims. Run autonomously; ask only if blocked.
+Context
+·       Upstream repo   https://github.com/aws-samples/swift-chat
+·       LibreAgents fork  https://github.com/LibreAgent/client
+·       Expo.dev account topaims
+·       Expo project slug LibreAgents
+·       Bundle IDs        com.libreagents.mobile (shared)
+·       Target platforms  Android • iOS • macOS (Catalyst) • Web
+
+Primary Goal
+1.     Clone the SwiftChat fork into the workspace.
+2.     Convert to an Expo managed project (no eject).
+3.     Build with zero TypeScript/Metro errors.
+4.     Run Expo dev server and confirm web preview.
+5.     Publish dev builds under Expo account topaims.
+
+Detailed Steps for the Agent
+1.     Git Operations
+2.  git clone https://github.com/LibreAgent/client.git libreagents-client
+3.  cd libreagents-client
+4.  git checkout -b libreagents-expo
+5.     Convert to Expo
+6.  npx create-expo-app@latest --template blank expo-wrapper
+7.  mv react-native/* expo-wrapper/
+8.  rm -rf ios android   # keep if needed for native modules
+Add app.config.js:
+export default {
+  name: 'LibreAgents',
+  slug: 'libreagents',
+  ios: { bundleIdentifier: 'com.libreagents.mobile' },
+  android: { package: 'com.libreagents.mobile' },
+  web: { bundler: 'webpack' }
+};
+9.     Dependencies & Doctor
+10.cd expo-wrapper
+11.npm i react-native-web expo-status-bar
+12.expo install
+13.expo doctor
+14.  Polyfills & Fixes
+o   Replace Node fs, path imports with browser‑safe shims.
+o   Stub out native mic modules with “voice not supported on web”.
+15.  Run & Test
+16.npm start        # Metro
+17.# press w to open http://localhost:19006
+18.  Expo Login & Bundle IDs
+19.expo login --username topaims  # will prompt for password
+20.eas register --platform all
+21.  Publish Dev Build
+22.expo publish --release-channel dev
+Return the QR code / web preview link.
+Ask only if a blocking error occurs or a required config value is missing. Otherwise proceed autonomously.
+Completion phrase: ✅ LibreAgents Expo build ready followed by the preview URL.
+(Feel free to adjust paths; keep output in workspace root.)
