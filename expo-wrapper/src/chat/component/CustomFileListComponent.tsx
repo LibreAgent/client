@@ -11,7 +11,7 @@ import { FileInfo, FileType } from '../../types/Chat.ts';
 import { CustomAddFileComponent } from './CustomAddFileComponent.tsx';
 import ImageView from 'react-native-image-viewing';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
-import Share from 'react-native-share';
+import * as Sharing from 'expo-sharing';
 import FileViewer from 'react-native-file-viewer';
 import { isMac } from '../../App.tsx';
 import { getFullFileUrl, saveFile } from '../util/FileUtils.ts';
@@ -190,14 +190,12 @@ export const CustomFileListComponent: React.FC<CustomFileProps> = ({
         )}
 
         <TouchableOpacity
-          onLongPress={() => {
+          onLongPress={async () => {
             try {
-              const options = {
-                type: 'text/plain',
-                url: fullFileUrl,
-                showAppsToView: true,
-              };
-              Share.open(options).then();
+              await Sharing.shareAsync(fullFileUrl, {
+                mimeType: 'text/plain',
+                dialogTitle: 'Share File',
+              });
             } catch (error) {
               console.log('Error opening file:', error);
             }

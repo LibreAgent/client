@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Share from 'react-native-share';
+import * as Sharing from 'expo-sharing';
 import { MessageProps } from 'react-native-gifted-chat';
 import { CustomMarkdownRenderer } from './markdown/CustomMarkdownRenderer.tsx';
 import { MarkedStyles } from 'react-native-marked/src/theme/types.ts';
@@ -174,8 +174,10 @@ const CustomMessageComponent: React.FC<CustomMessageProps> = ({
         });
     } else if (pressMode === PressMode.LongPress) {
       trigger(HapticFeedbackTypes.notificationSuccess);
-      const shareOptions = { url: url, type: 'image/png', title: 'AI Image' };
-      Share.open(shareOptions)
+      Sharing.shareAsync(url, {
+        mimeType: 'image/png',
+        dialogTitle: 'AI Image',
+      })
         .then(res => console.log(res))
         .catch(err => err && console.log(err));
     }
