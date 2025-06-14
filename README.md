@@ -854,3 +854,157 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
+
+## Developer Configuration
+
+### Changing the Default Model
+
+SwiftChat currently defaults to **Gemma3 4B** via the **LibreAgents** provider. As a developer, you can easily modify this default to use any supported model or provider.
+
+#### Quick Configuration Steps
+
+1. **Navigate to the Constants file:**
+   ```
+   expo-wrapper/src/storage/Constants.ts
+   ```
+
+2. **Locate the DefaultTextModel configuration:**
+   ```typescript
+   // DEFAULT MODEL CONFIGURATION
+   // ===========================
+   // This is the primary default model that appears when the app first loads
+   // and when no model has been previously selected by the user.
+   export const DefaultTextModel = [
+     {
+       modelName: 'Gemma3 4B',        // Display name in UI
+       modelId: 'gemma3-4b',          // API identifier
+       modelTag: ModelTag.Libre,      // Provider tag
+     },
+   ];
+   ```
+
+3. **Update the configuration** with your preferred model:
+
+#### Example Configurations
+
+**For Amazon Nova Pro (Bedrock):**
+```typescript
+export const DefaultTextModel = [
+  {
+    modelName: 'Nova Pro',
+    modelId: 'us.amazon.nova-pro-v1:0',
+    modelTag: ModelTag.Bedrock,
+  },
+];
+```
+
+**For OpenAI GPT-4:**
+```typescript
+export const DefaultTextModel = [
+  {
+    modelName: 'GPT-4',
+    modelId: 'gpt-4',
+    modelTag: ModelTag.OpenAI,
+  },
+];
+```
+
+**For Ollama Models:**
+```typescript
+export const DefaultTextModel = [
+  {
+    modelName: 'Llama 3.1',
+    modelId: 'llama3.1',
+    modelTag: ModelTag.Ollama,
+  },
+];
+```
+
+#### Provider-Specific Model Arrays
+
+Each provider has its own model array that you should also update:
+
+**LibreAgents Models:**
+```typescript
+export const DefaultLibreModels = [
+  {
+    modelName: 'Gemma3 4B',
+    modelId: 'gemma3-4b',
+    modelTag: ModelTag.Libre,
+  },
+  // Add more LibreAgents models here
+];
+```
+
+**Bedrock Models:**
+```typescript
+export const BedrockModels = [
+  {
+    modelName: 'Nova Pro',
+    modelId: 'us.amazon.nova-pro-v1:0',
+    modelTag: ModelTag.Bedrock,
+  },
+  // Add more Bedrock models here
+];
+```
+
+#### Settings Tab Configuration
+
+If you change the default provider, ensure the corresponding settings tab is available:
+
+1. **Open Settings Screen:**
+   ```
+   expo-wrapper/src/settings/SettingsScreen.tsx
+   ```
+
+2. **Check tab order** (around line 500):
+   ```typescript
+   <TabButton
+     label="Libre"           // Make sure this matches your provider
+     isSelected={selectedTab === 'libre'}
+     onPress={() => setSelectedTab('libre')}
+   />
+   ```
+
+3. **Verify provider case** in `renderProviderSettings()` function
+
+#### Greeting Message Configuration
+
+The greeting message will automatically show the provider name for LibreAgents models, or the model name for other providers. This is configured in:
+
+```
+expo-wrapper/src/chat/component/EmptyChatComponent.tsx
+```
+
+#### Testing Your Changes
+
+1. **Clear app storage** to reset to defaults
+2. **Rebuild the app:**
+   ```bash
+   npx expo start --clear
+   ```
+3. **Verify** the new default model appears in:
+   - Initial app greeting
+   - Settings model selection
+   - Chat interface
+
+#### Important Notes
+
+- **Provider Dependencies**: Ensure the target provider's API configuration is properly set up
+- **Model Availability**: Verify the model ID exists and is accessible via the provider's API
+- **UI Consistency**: Update any hardcoded references to the old default model
+- **Documentation**: Update any user-facing documentation that references the default model
+
+#### Troubleshooting
+
+**Model not appearing:**
+- Check that `ModelTag` enum includes your provider
+- Verify the model is included in the provider's model array
+- Ensure the settings tab for your provider is uncommented
+
+**API errors:**
+- Confirm the `modelId` matches the provider's API specification
+- Check that API keys/URLs are configured for the provider
+- Verify the model is available in your configured region (for cloud providers)
+
+---

@@ -77,6 +77,7 @@ const hapticEnabledKey = keyPrefix + 'hapticEnabled';
 const apiUrlKey = keyPrefix + 'apiUrlKey';
 const apiKeyTag = keyPrefix + 'apiKeyTag';
 const ollamaApiUrlKey = keyPrefix + 'ollamaApiUrlKey';
+const libreApiUrlKey = keyPrefix + 'libreApiUrlKey';
 const deepSeekApiKeyTag = keyPrefix + 'deepSeekApiKeyTag';
 const openAIApiKeyTag = keyPrefix + 'openAIApiKeyTag';
 const openAICompatApiKeyTag = keyPrefix + 'openAICompatApiKeyTag';
@@ -101,6 +102,7 @@ const tokenInfoKey = keyPrefix + 'tokenInfo';
 let currentApiUrl: string | undefined;
 let currentApiKey: string | undefined;
 let currentOllamaApiUrl: string | undefined;
+let currentLibreApiUrl: string | undefined;
 let currentDeepSeekApiKey: string | undefined;
 let currentOpenAIApiKey: string | undefined;
 let currentOpenAICompatApiKey: string | undefined;
@@ -208,6 +210,15 @@ export function getOllamaApiUrl(): string {
   }
 }
 
+export function getLibreApiUrl(): string {
+  if (currentLibreApiUrl) {
+    return currentLibreApiUrl;
+  } else {
+    currentLibreApiUrl = storage.getString(libreApiUrlKey) ?? '';
+    return currentLibreApiUrl;
+  }
+}
+
 export function getApiKey(): string {
   if (currentApiKey) {
     return currentApiKey;
@@ -291,6 +302,11 @@ export function saveApiKey(apiKey: string): void {
 export function saveOllamaApiURL(apiUrl: string): void {
   currentOllamaApiUrl = apiUrl;
   storage.set(ollamaApiUrlKey, apiUrl);
+}
+
+export function saveLibreApiURL(apiUrl: string): void {
+  currentLibreApiUrl = apiUrl;
+  storage.set(libreApiUrlKey, apiUrl);
 }
 
 export function saveDeepSeekApiKey(apiKey: string): void {

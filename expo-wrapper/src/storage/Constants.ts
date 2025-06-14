@@ -54,11 +54,34 @@ export const DeepSeekModels = [
 export const BedrockThinkingModels = ['Claude 3.7 Sonnet'];
 export const BedrockVoiceModels = ['Nova Sonic'];
 
+// DEFAULT MODEL CONFIGURATION
+// ===========================
+// This is the primary default model that appears when the app first loads
+// and when no model has been previously selected by the user.
+// 
+// To change the default model in the future:
+// 1. Update the modelName, modelId, and modelTag below
+// 2. Ensure the corresponding provider tab exists in SettingsScreen.tsx
+// 3. Update DefaultLibreModels if using a different Libre model
+// 
+// Current default: Gemma3 4B (LibreAgents provider)
 export const DefaultTextModel = [
   {
-    modelName: 'Nova Pro',
-    modelId: 'us.amazon.nova-pro-v1:0',
-    modelTag: ModelTag.Bedrock,
+    modelName: 'Gemma3 4B',
+    modelId: 'gemma3-4b',
+    modelTag: ModelTag.Libre,
+  },
+];
+
+// LIBRE PROVIDER MODELS
+// ====================
+// Available models for the LibreAgents provider
+// The first model in this array will be the default when Libre tab is selected
+export const DefaultLibreModels = [
+  {
+    modelName: 'Gemma3 4B',
+    modelId: 'gemma3-4b',
+    modelTag: ModelTag.Libre,
   },
 ];
 

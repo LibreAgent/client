@@ -24,6 +24,7 @@ import {
   getHapticEnabled,
   getImageModel,
   getImageSize,
+  getLibreApiUrl,
   getModelUsage,
   getOllamaApiUrl,
   getOpenAIApiKey,
@@ -41,6 +42,7 @@ import {
   saveImageModel,
   saveImageSize,
   saveKeys,
+  saveLibreApiURL,
   saveOllamaApiURL,
   saveOpenAIApiKey,
   saveOpenAICompatApiKey,
@@ -119,9 +121,10 @@ function SettingsScreen(): React.JSX.Element {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo>(initUpgradeInfo);
   const [cost, setCost] = useState('0.00');
   const controllerRef = useRef<AbortController | null>(null);
-  const [selectedTab, setSelectedTab] = useState('bedrock');
+  const [selectedTab, setSelectedTab] = useState('libre');
   const [thinkingEnabled, setThinkingEnabled] = useState(getThinkingEnabled);
   const [voiceId, setVoiceId] = useState(getVoiceId);
+  const [libreApiUrl, setLibreApiUrl] = useState(getLibreApiUrl);
   const { sendEvent } = useAppContext();
   const sendEventRef = useRef(sendEvent);
 
@@ -344,6 +347,15 @@ function SettingsScreen(): React.JSX.Element {
 
   const renderProviderSettings = () => {
     switch (selectedTab) {
+      case 'libre':
+        return (
+          <CustomTextInput
+            label="LibreAgents API URL"
+            value={libreApiUrl}
+            onChangeText={setLibreApiUrl}
+            placeholder="Enter LibreAgents API URL"
+          />
+        );
       case 'bedrock':
         return (
           <>
@@ -382,16 +394,6 @@ function SettingsScreen(): React.JSX.Element {
             value={ollamaApiUrl}
             onChangeText={setOllamaApiUrl}
             placeholder="Enter Ollama API URL"
-          />
-        );
-      case 'deepseek':
-        return (
-          <CustomTextInput
-            label="DeepSeek API Key"
-            value={deepSeekApiKey}
-            onChangeText={setDeepSeekApiKey}
-            placeholder="Enter Deep Seek API Key"
-            secureTextEntry={true}
           />
         );
       case 'openai':
@@ -446,25 +448,69 @@ function SettingsScreen(): React.JSX.Element {
     }
   };
 
+  useEffect(() => {
+    saveKeys(apiKey, apiUrl);
+    saveOllamaApiURL(ollamaApiUrl);
+    saveLibreApiURL(libreApiUrl);
+    saveDeepSeekApiKey(deepSeekApiKey);
+    saveOpenAIApiKey(openAIApiKey);
+    saveOpenAICompatApiKey(openAICompatApiKey);
+    saveOpenAICompatApiURL(openAICompatApiURL);
+    saveOpenAICompatModels(openAICompatModels);
+    saveOpenAIProxyEnabled(openAIProxyEnabled);
+    if (selectedTextModel) {
+      saveTextModel(selectedTextModel);
+      updateTextModelUsageOrder(selectedTextModel);
+    }
+    if (selectedImageModel) {
+      const selectedModel = imageModels.find(
+        model => model.modelId === selectedImageModel
+      );
+      if (selectedModel) {
+        saveImageModel(selectedModel);
+      }
+    }
+    saveImageSize(imageSize);
+    saveThinkingEnabled(thinkingEnabled);
+    saveVoiceId(voiceId);
+  }, [
+    apiKey,
+    apiUrl,
+    ollamaApiUrl,
+    libreApiUrl,
+    deepSeekApiKey,
+    openAIApiKey,
+    openAICompatApiKey,
+    openAICompatApiURL,
+    openAICompatModels,
+    openAIProxyEnabled,
+    selectedTextModel,
+    selectedImageModel,
+    imageModels,
+    imageSize,
+    thinkingEnabled,
+    voiceId,
+  ]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.providerSettingsWrapper}>
           <View style={styles.tabContainer}>
             <TabButton
+              label="Libre"
+              isSelected={selectedTab === 'libre'}
+              onPress={() => setSelectedTab('libre')}
+            />
+            {/* <TabButton
               label={isMac ? 'Amazon Bedrock' : 'Bedrock'}
               isSelected={selectedTab === 'bedrock'}
               onPress={() => setSelectedTab('bedrock')}
-            />
+            /> */}
             <TabButton
               label="Ollama"
               isSelected={selectedTab === 'ollama'}
               onPress={() => setSelectedTab('ollama')}
-            />
-            <TabButton
-              label="DeepSeek"
-              isSelected={selectedTab === 'deepseek'}
-              onPress={() => setSelectedTab('deepseek')}
             />
             <TabButton
               label="OpenAI"

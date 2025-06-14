@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { RouteParamList } from '../../types/RouteTypes.ts';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { getImageModel, getTextModel } from '../../storage/StorageUtils.ts';
+import { ModelTag } from '../../types/Chat.ts';
 
 const isAndroid = Platform.OS === 'android';
 type NavigationProp = DrawerNavigationProp<RouteParamList>;
@@ -39,7 +40,9 @@ export const EmptyChatComponent = ({
 
   const modelName =
     chatMode === ChatMode.Text
-      ? currentTextModel.modelName
+      ? currentTextModel.modelTag === ModelTag.Libre
+        ? 'LibreAgents'
+        : currentTextModel.modelName
       : getImageModel().modelName;
 
   return (
